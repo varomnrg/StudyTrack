@@ -1,23 +1,29 @@
-require("dotenv").config();
+require('dotenv').config();
 
-const Hapi = require("@hapi/hapi");
-const Inert = require("@hapi/inert");
-const Vision = require("@hapi/vision");
-const HapiSwagger = require("hapi-swagger");
-const Pack = require("../package");
+const Hapi = require('@hapi/hapi');
+const Inert = require('@hapi/inert');
+const Vision = require('@hapi/vision');
+const HapiSwagger = require('hapi-swagger');
+const Pack = require('../package');
 
 //error
-const ClientError = require("./error/ClientError");
+const ClientError = require('./error/ClientError');
 
 //tasks
-const tasks = require("./api/tasks");
-const TasksService = require("./services/postgres/TasksService");
-const TasksValidator = require("./validator/tasks");
+const tasks = require('./api/tasks');
+const TasksService = require('./services/postgres/TasksService');
+const TasksValidator = require('./validator/tasks');
+
+//users
+const users = require('./api/users');
+const UsersService = require('./services/postgres/UsersService');
+const UsersValidator = require('./validator/users');
 
 //Create Server
 const createServer = async () => {
     //Init Plugin
     const tasksService = new TasksService();
+    const usersService = new UsersService();
 
     //Server Config
     const server = Hapi.server({
@@ -25,26 +31,34 @@ const createServer = async () => {
         host: process.env.HOST,
         routes: {
             cors: {
-                origin: ["*"],
+                origin: ['*'],
             },
         },
         debug: {
-            request: ["error", "info"],
+            request: ['error'],
         },
     });
 
     //Logging incoming request
-    server.ext("onPostResponse", (request, h) => {
-        console.log(new Date().toISOString() + ": " + request.method.toUpperCase() + " " + request.path + " --> " + request.response.statusCode);
+    server.ext('onPostResponse', (request, h) => {
+        console.log(
+            new Date().toISOString() +
+                ': ' +
+                request.method.toUpperCase() +
+                ' ' +
+                request.path +
+                ' --> ' +
+                request.response.statusCode
+        );
         return h.continue;
     });
 
-    server.ext("onPreHandler", (request, h) => {
+    server.ext('onPreResponse', (request, h) => {
         const { response } = request;
         if (response instanceof Error) {
             if (response instanceof ClientError) {
                 const newResponse = h.response({
-                    status: "fail",
+                    status: 'fail',
                     message: response.message,
                 });
                 newResponse.code(response.statusCode);
@@ -54,8 +68,8 @@ const createServer = async () => {
                 return h.continue;
             }
             const newResponse = h.response({
-                status: "error",
-                message: "terjadi kegagalan pada server kami",
+                status: 'error',
+                message: 'terjadi kegagalan pada server kami',
             });
             newResponse.code(500);
             return newResponse;
@@ -65,7 +79,7 @@ const createServer = async () => {
 
     const swaggerOptions = {
         info: {
-            title: "StudyTrack App Documentation",
+            title: 'StudyTrack App Documentation',
             version: Pack.version,
         },
     };
@@ -85,6 +99,13 @@ const createServer = async () => {
             options: {
                 service: tasksService,
                 validator: TasksValidator,
+            },
+        },
+        {
+            plugin: users,
+            options: {
+                service: usersService,
+                validator: UsersValidator,
             },
         },
     ]);
