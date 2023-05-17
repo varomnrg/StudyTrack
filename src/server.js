@@ -9,8 +9,16 @@ const Pack = require("../package");
 //error
 const ClientError = require("./error/ClientError");
 
+//tasks
+const tasks = require("./api/tasks");
+const TasksService = require("./services/postgres/TasksService");
+const TasksValidator = require("./validator/tasks");
+
 //Create Server
 const createServer = async () => {
+    //Init Plugin
+    const tasksService = new TasksService();
+
     //Server Config
     const server = Hapi.server({
         port: process.env.PORT,
@@ -71,7 +79,15 @@ const createServer = async () => {
         },
     ]);
 
-    // await server.register([]);
+    await server.register([
+        {
+            plugin: tasks,
+            options: {
+                service: tasksService,
+                validator: TasksValidator,
+            },
+        },
+    ]);
 
     return server;
 };
