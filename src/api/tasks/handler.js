@@ -34,7 +34,7 @@ class TasksHandler {
         return {
             status: 'success',
             data: {
-                task,
+                ...task,
             },
         };
     }

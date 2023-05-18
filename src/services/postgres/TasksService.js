@@ -1,6 +1,7 @@
 const { Pool } = require('pg');
 const { nanoid } = require('nanoid');
 const InvariantError = require('../../error/InvariantError');
+const NotFoundError = require('../../error/NotFoundError');
 
 class TasksService {
     constructor() {
@@ -29,9 +30,9 @@ class TasksService {
         };
         const result = await this._pool.query(query);
         if (!result.rowCount) {
-            throw new InvariantError('Task tidak ditemukan');
+            throw new NotFoundError('Task tidak ditemukan');
         }
-        return result.rows;
+        return result.rows[0];
     }
 
     async updateTaskById({ id, title, description, dueDate, status }) {
@@ -41,9 +42,8 @@ class TasksService {
             values: [title, description, dueDate, status, updatedAt, id],
         };
         const result = await this._pool.query(query);
-        console.log(result);
         if (!result.rowCount) {
-            throw new InvariantError('Gagal memperbarui task');
+            throw new NotFoundError('Gagal memperbarui task, Id tidak ditemukan');
         }
     }
 
@@ -55,7 +55,7 @@ class TasksService {
         const result = await this._pool.query(query);
 
         if (!result.rowCount) {
-            throw new InvariantError('Gagal menghapus task');
+            throw new NotFoundError('Gagal menghapus task, Id tidak ditemukan');
         }
     }
 }
