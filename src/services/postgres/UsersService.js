@@ -11,6 +11,7 @@ class UsersService {
     }
 
     async addUser(username, email, password) {
+        await this.verifyNewUsername(username);
         const id = `user-${nanoid(16)}`;
         const hashedPassword = await bcrypt.hash(password, this._saltRounds);
         const createdAt = new Date().toISOString();
@@ -67,6 +68,19 @@ class UsersService {
 
         if (!result.rowCount) {
             throw new NotFoundError('User gagal dihapus. Id tidak ditemukan');
+        }
+    }
+
+    async verifyNewUsername(username) {
+        const query = {
+            text: 'SELECT username FROM users WHERE username = $1',
+            values: [username],
+        };
+
+        const result = await this._pool.query(query);
+
+        if (result.rowCount) {
+            throw new InvariantError('Gagal menambahkan user, username sudah digunakan');
         }
     }
 }
