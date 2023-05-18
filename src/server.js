@@ -24,12 +24,18 @@ const notes = require('./api/notes');
 const NotesService = require('./services/postgres/NotesService');
 const NotesValidator = require('./validator/notes');
 
+//agenda
+const agenda = require('./api/agenda');
+const AgendaService = require('./services/postgres/AgendaService');
+const AgendaValidator = require('./validator/agenda');
+
 //Create Server
 const createServer = async () => {
     //Init Plugin
     const tasksService = new TasksService();
     const usersService = new UsersService();
     const notesService = new NotesService();
+    const agendaService = new AgendaService();
 
     //Server Config
     const server = Hapi.server({
@@ -40,9 +46,9 @@ const createServer = async () => {
                 origin: ['*'],
             },
         },
-        debug: {
-            request: ['error'],
-        },
+        // debug: {
+        //     request: ['error'],
+        // },
     });
 
     //Logging incoming request
@@ -100,6 +106,7 @@ const createServer = async () => {
         },
     ]);
 
+    // server.realm.modifiers.route.prefix = '/api';
     await server.register([
         {
             plugin: tasks,
@@ -120,6 +127,13 @@ const createServer = async () => {
             options: {
                 service: notesService,
                 validator: NotesValidator,
+            },
+        },
+        {
+            plugin: agenda,
+            options: {
+                service: agendaService,
+                validator: AgendaValidator,
             },
         },
     ]);
