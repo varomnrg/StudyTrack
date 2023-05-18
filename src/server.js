@@ -19,11 +19,17 @@ const users = require('./api/users');
 const UsersService = require('./services/postgres/UsersService');
 const UsersValidator = require('./validator/users');
 
+//notes
+const notes = require('./api/notes');
+const NotesService = require('./services/postgres/NotesService');
+const NotesValidator = require('./validator/notes');
+
 //Create Server
 const createServer = async () => {
     //Init Plugin
     const tasksService = new TasksService();
     const usersService = new UsersService();
+    const notesService = new NotesService();
 
     //Server Config
     const server = Hapi.server({
@@ -53,6 +59,7 @@ const createServer = async () => {
         return h.continue;
     });
 
+    //Error response
     server.ext('onPreResponse', (request, h) => {
         const { response } = request;
         if (response instanceof Error) {
@@ -106,6 +113,13 @@ const createServer = async () => {
             options: {
                 service: usersService,
                 validator: UsersValidator,
+            },
+        },
+        {
+            plugin: notes,
+            options: {
+                service: notesService,
+                validator: NotesValidator,
             },
         },
     ]);
