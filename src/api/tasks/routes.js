@@ -29,16 +29,13 @@ const routes = (handler, validator) => [
     },
     {
         method: 'GET',
-        path: '/tasks/{ownerId}',
+        path: '/tasks',
         handler: (request) => handler.getTasksByOwnerIdHandler(request),
         options: {
             auth: 'studytrack_jwt',
             description: 'Menampilkan daftar task berdasarkan ownerId',
             notes: 'Menerima request parameter berupa ownerId dan mengembalikan response berupa daftar task yang dimiliki oleh ownerId tersebut',
             tags: ['api'],
-            validate: {
-                params: validator.TaskOwnerParamSchema,
-            },
         },
     },
     {

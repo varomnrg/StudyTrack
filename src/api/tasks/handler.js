@@ -40,7 +40,7 @@ class TasksHandler {
     }
 
     async getTasksByOwnerIdHandler(request) {
-        const { ownerId } = request.params;
+        const { id: ownerId } = request.auth.credentials;
         const tasks = await this._service.getTaskByOwnerId(ownerId);
         return {
             status: 'success',

@@ -32,6 +32,15 @@ class AgendaHandler {
         };
     }
 
+    async getAgendasByOwnerIdHandler(request) {
+        const { id: ownerId } = request.auth.credentials;
+        const agendas = await this._service.getAgendasByOwnerId(ownerId);
+        return {
+            status: 'success',
+            data: agendas,
+        };
+    }
+
     async putAgendaByIdHandler(request) {
         await this._validator.validateAgendaPayload(request.payload);
         const { id } = request.params;

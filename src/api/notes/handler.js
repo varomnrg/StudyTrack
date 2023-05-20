@@ -34,6 +34,17 @@ class NotesHandler {
         };
     }
 
+    async getNotesByOwnerIdHandler(request) {
+        const { id: ownerId } = request.auth.credentials;
+        const notes = await this._service.getNotesByOwnerId(ownerId);
+        return {
+            status: 'success',
+            data: {
+                notes,
+            },
+        };
+    }
+
     async putNoteByIdHandler(request) {
         this._validator.validateNotePayload(request.payload);
         const { id } = request.params;

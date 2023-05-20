@@ -28,6 +28,17 @@ const routes = (handler, validator) => [
         },
     },
     {
+        method: 'GET',
+        path: '/notes',
+        handler: (request) => handler.getNotesByOwnerIdHandler(request),
+        options: {
+            auth: 'studytrack_jwt',
+            description: 'Menampilkan catatan berdasarkan ownerId',
+            notes: 'Menampilkan catatan berdasarkan ownerId',
+            tags: ['api'],
+        },
+    },
+    {
         method: 'PUT',
         path: '/note/{id}',
         handler: (request) => handler.putNoteByIdHandler(request),

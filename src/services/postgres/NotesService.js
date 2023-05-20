@@ -40,6 +40,21 @@ class NotesService {
         return result.rows[0];
     }
 
+    async getNotesByOwnerId(ownerId) {
+        const query = {
+            text: 'SELECT * FROM notes WHERE owner_id = $1',
+            values: [ownerId],
+        };
+
+        const result = await this._pool.query(query);
+
+        if (!result.rowCount) {
+            throw new NotFoundError('Catatan tidak ditemukan');
+        }
+
+        return result.rows;
+    }
+
     async updateNoteById(id, { title, content }) {
         const updatedAt = new Date().toISOString();
         const query = {

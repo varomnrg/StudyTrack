@@ -28,6 +28,17 @@ const routes = (handler, validator) => [
         },
     },
     {
+        method: 'GET',
+        path: '/agendas',
+        handler: (request) => handler.getAgendasByOwnerIdHandler(request),
+        options: {
+            auth: 'studytrack_jwt',
+            description: 'Menampilkan agenda berdasarkan ownerId',
+            notes: 'Menampilkan agenda berdasarkan ownerId',
+            tags: ['api'],
+        },
+    },
+    {
         method: 'PUT',
         path: '/agenda/{id}',
         handler: (request) => handler.putAgendaByIdHandler(request),

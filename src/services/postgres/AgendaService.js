@@ -39,6 +39,21 @@ class AgendaService {
         return result.rows[0];
     }
 
+    async getAgendasByOwnerId(ownerId) {
+        const query = {
+            text: 'SELECT * FROM agenda WHERE owner_id = $1',
+            values: [ownerId],
+        };
+
+        const result = await this._pool.query(query);
+
+        if (!result.rowCount) {
+            throw new NotFoundError('Agenda tidak ditemukan');
+        }
+
+        return result.rows;
+    }
+
     async updateAgendaById(agendaId, { title, description, startDate, endDate }) {
         const updatedAt = new Date().toISOString();
         console.log(agendaId, title, description, startDate, endDate, updatedAt);
