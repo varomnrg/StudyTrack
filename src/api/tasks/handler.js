@@ -7,7 +7,7 @@ class TasksHandler {
     async postTaskHandler(request, h) {
         this._validator.validateTaskPayload(request.payload);
         const { title = 'untitled', description, dueDate = NULL, status } = request.payload;
-        const ownerId = 'user-123';
+        const { id: ownerId } = request.auth.credentials;
         const taskId = await this._service.addTask({
             ownerId,
             title,
@@ -36,6 +36,15 @@ class TasksHandler {
             data: {
                 ...task,
             },
+        };
+    }
+
+    async getTasksByOwnerIdHandler(request) {
+        const { ownerId } = request.params;
+        const tasks = await this._service.getTaskByOwnerId(ownerId);
+        return {
+            status: 'success',
+            data: tasks,
         };
     }
 

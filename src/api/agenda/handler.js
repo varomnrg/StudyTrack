@@ -7,7 +7,7 @@ class AgendaHandler {
     async postAgendaHandler(request, h) {
         await this._validator.validateAgendaPayload(request.payload);
         const { title, description, start_date, end_date } = request.payload;
-        const ownerId = 'user-123';
+        const { id: ownerId } = request.auth.credentials;
         const id = await this._service.addAgenda(ownerId, title, description, start_date, end_date);
         const response = h.response({
             status: 'success',
@@ -35,7 +35,6 @@ class AgendaHandler {
     async putAgendaByIdHandler(request) {
         await this._validator.validateAgendaPayload(request.payload);
         const { id } = request.params;
-        console.log(request.payload);
         const { title, description, start_date: startDate, end_date: endDate } = request.payload;
         await this._service.updateAgendaById(id, { title, description, startDate, endDate });
         return {

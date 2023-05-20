@@ -4,6 +4,7 @@ const routes = (handler, validator) => [
         path: '/note',
         handler: (request, h) => handler.postNoteHandler(request, h),
         options: {
+            auth: 'studytrack_jwt',
             description: 'Menambahkan catatan',
             notes: 'Menambahkan catatan baru dengan title dan content',
             tags: ['api'],
@@ -17,6 +18,7 @@ const routes = (handler, validator) => [
         path: '/note/{id}',
         handler: (request) => handler.getNoteByIdHandler(request),
         options: {
+            auth: 'studytrack_jwt',
             description: 'Menampilkan catatan berdasarkan id',
             notes: 'Menampilkan catatan berdasarkan id',
             tags: ['api'],
@@ -30,6 +32,7 @@ const routes = (handler, validator) => [
         path: '/note/{id}',
         handler: (request) => handler.putNoteByIdHandler(request),
         options: {
+            auth: 'studytrack_jwt',
             description: 'Mengubah catatan berdasarkan id',
             notes: 'Mengubah catatan berdasarkan id',
             tags: ['api'],
@@ -44,6 +47,7 @@ const routes = (handler, validator) => [
         path: '/note/{id}',
         handler: (request) => handler.deleteNoteByIdHandler(request),
         options: {
+            auth: 'studytrack_jwt',
             description: 'Menghapus catatan berdasarkan id',
             notes: 'Menghapus catatan berdasarkan id',
             tags: ['api'],
