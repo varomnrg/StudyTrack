@@ -1,5 +1,5 @@
-const { TaskPayloadSchema, TaskParamSchema } = require("./schema");
-const InvariantError = require("../../error/InvariantError");
+const { TaskPayloadSchema, TaskParamSchema, TaskOwnerParamSchema } = require('./schema');
+const InvariantError = require('../../error/InvariantError');
 
 const TaskValidator = {
     validateTaskPayload: (payload) => {
@@ -10,6 +10,7 @@ const TaskValidator = {
     },
     TaskPayloadSchema,
     TaskParamSchema,
+    TaskOwnerParamSchema,
 };
 
 module.exports = TaskValidator;

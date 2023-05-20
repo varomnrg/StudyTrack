@@ -3,6 +3,7 @@ require('dotenv').config();
 const Hapi = require('@hapi/hapi');
 const Inert = require('@hapi/inert');
 const Vision = require('@hapi/vision');
+const Jwt = require('@hapi/jwt');
 const HapiSwagger = require('hapi-swagger');
 const Pack = require('../package');
 
@@ -29,6 +30,12 @@ const agenda = require('./api/agenda');
 const AgendaService = require('./services/postgres/AgendaService');
 const AgendaValidator = require('./validator/agenda');
 
+//authentications
+const authentications = require('./api/authentications');
+const AuthenticationsService = require('./services/postgres/AuthenticationsService');
+const TokenManager = require('./tokenize/TokenManager');
+const AuthenticationsValidator = require('./validator/authentications');
+
 //Create Server
 const createServer = async () => {
     //Init Plugin
@@ -36,6 +43,7 @@ const createServer = async () => {
     const usersService = new UsersService();
     const notesService = new NotesService();
     const agendaService = new AgendaService();
+    const authenticationsService = new AuthenticationsService();
 
     //Server Config
     const server = Hapi.server({
@@ -95,19 +103,55 @@ const createServer = async () => {
             title: 'StudyTrack App Documentation',
             version: Pack.version,
         },
+        securityDefinitions: {
+            bearerAuth: {
+                scheme: 'bearer',
+                type: 'apiKey',
+                name: 'Authorization',
+                in: 'header',
+            },
+        },
+        security: [{ bearerAuth: [] }],
     };
 
     await server.register([
         Inert,
         Vision,
+        Jwt,
         {
             plugin: HapiSwagger,
             options: swaggerOptions,
         },
     ]);
 
+    //JWT Auth Strategy
+    server.auth.strategy('studytrack_jwt', 'jwt', {
+        keys: process.env.ACCESS_TOKEN_KEY,
+        verify: {
+            aud: false,
+            iss: false,
+            sub: false,
+            maxAgeSec: process.env.ACCESS_TOKEN_AGE,
+        },
+        validate: (artifacts) => ({
+            isValid: true,
+            credentials: {
+                id: artifacts.decoded.payload.id,
+            },
+        }),
+    });
+
     // server.realm.modifiers.route.prefix = '/api';
     await server.register([
+        {
+            plugin: authentications,
+            options: {
+                authenticationsService,
+                usersService,
+                tokenManager: TokenManager,
+                validator: AuthenticationsValidator,
+            },
+        },
         {
             plugin: tasks,
             options: {

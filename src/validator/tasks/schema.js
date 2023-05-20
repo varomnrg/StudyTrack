@@ -11,4 +11,8 @@ const TaskParamSchema = Joi.object({
     id: Joi.string().required(),
 });
 
-module.exports = { TaskPayloadSchema, TaskParamSchema };
+const TaskOwnerParamSchema = Joi.object({
+    ownerId: Joi.string().required(),
+});
+
+module.exports = { TaskPayloadSchema, TaskParamSchema, TaskOwnerParamSchema };

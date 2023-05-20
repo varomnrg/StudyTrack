@@ -35,6 +35,18 @@ class TasksService {
         return result.rows[0];
     }
 
+    async getTaskByOwnerId(ownerId) {
+        const query = {
+            text: 'SELECT title, description, due_date, status FROM tasks WHERE owner_id = $1',
+            values: [ownerId],
+        };
+        const result = await this._pool.query(query);
+        if (!result.rowCount) {
+            throw new NotFoundError('Task tidak ditemukan');
+        }
+        return result.rows;
+    }
+
     async updateTaskById({ id, title, description, dueDate, status }) {
         const updatedAt = new Date().toISOString();
         const query = {
