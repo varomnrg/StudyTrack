@@ -30,6 +30,7 @@ const routes = (handler, validator) => [
         path: '/user/{id}',
         handler: (request) => handler.putUserByIdHandler(request),
         options: {
+            auth: 'studytrack_jwt',
             description: 'Memperbaharui user berdasarkan id',
             notes: 'Memperbaharui user berdasarkan id',
             tags: ['api'],
@@ -44,6 +45,7 @@ const routes = (handler, validator) => [
         path: '/user/{id}',
         handler: (request) => handler.deleteUserByIdHandler(request),
         options: {
+            auth: 'studytrack_jwt',
             description: 'Menghapus user berdasarkan id',
             notes: 'Menghapus user berdasarkan id',
             tags: ['api'],
