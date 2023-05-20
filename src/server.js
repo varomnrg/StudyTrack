@@ -46,9 +46,9 @@ const createServer = async () => {
                 origin: ['*'],
             },
         },
-        // debug: {
-        //     request: ['error'],
-        // },
+        debug: {
+            request: ['error'],
+        },
     });
 
     //Logging incoming request

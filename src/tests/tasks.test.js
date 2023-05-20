@@ -197,7 +197,6 @@ describe('DELETE /task/{id}', () => {
                     status: 2,
                 });
             const res = await request((await server).listener).delete('/task/' + tester.body.data.task_id);
-            console.log(res);
             expect(res.statusCode).toEqual(200);
         });
 
