@@ -17,6 +17,7 @@ const routes = (handler, validator) => [
         path: '/user/{id}',
         handler: (request) => handler.getUserByIdHandler(request),
         options: {
+            auth: 'studytrack_jwt',
             description: 'Mendapatkan user berdasarkan id',
             notes: 'Mendapatkan user berdasarkan id',
             tags: ['api'],
